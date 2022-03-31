@@ -8,6 +8,58 @@ app.use(cors());
 
 const posts = {};
 
+const handleEvent = (type, data) => {
+    // if(type === 'PostCreated'){
+    //     const {id, title} = data;
+
+    //     posts[id] = {id, title, comments: []};
+    // }
+    // else if(type === 'CommentCreated'){
+    //     const {id, content, postId, status} = data;
+
+    //     posts[postId].comments.push({ id, content, status })
+    // }
+    // else if(type === 'CommentUpdated'){
+    //     const { id, content, postId, status } = data;
+
+    //     const post = posts[postId];
+
+    //     const comment = post.comments.find(comment => {
+    //         return comment.id === id;
+    //     });
+
+    //     comment.status = status;
+    //     comment.content = content;
+    // }
+    switch (type) {
+        case 'PostCreated':{
+            let {id, title} = data;
+            posts[id] = {id, title, comments: []};
+            break;
+        }
+
+        case 'CommentCreated':{
+            let {id, content, postId, status} = data;
+            posts[postId].comments.push({ id, content, status })
+            break;
+        }
+
+        case 'CommentUpdated':{
+            let { id, content, postId, status } = data;
+
+            const post = posts[postId];
+
+            const comment = post.comments.find(comment => {
+                return comment.id === id;
+            });
+
+            comment.status = status;
+            comment.content = content;
+            break;
+        }
+    }
+};
+
 app.get('/posts', (req, res) => {
     res.send(posts);
 });
@@ -15,28 +67,7 @@ app.get('/posts', (req, res) => {
 app.post('/events', (req, res) => {
     const {type, data} = req.body;
 
-    if(type === 'PostCreated'){
-        const {id, title} = data;
-
-        posts[id] = {id, title, comments: []};
-    }
-    else if(type === 'CommentCreated'){
-        const {id, content, postId, status} = data;
-
-        posts[postId].comments.push({ id, content, status })
-    }
-    else if(type === 'CommentUpdated'){
-        const { id, content, postId, status } = data;
-
-        const post = posts[postId];
-
-        const comment = post.comments.find(comment => {
-            return comment.id === id;
-        });
-
-        comment.status = status;
-        comment.content = content;
-    }
+    handleEvent(type, data);
 
     res.send({});
 });
