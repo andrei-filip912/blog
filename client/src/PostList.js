@@ -9,7 +9,7 @@ const PostList  = () => {
 
     const fetchPosts = async () => {
         const res = await axios.get('http://localhost:4002/posts');
-        console.log(res.data);
+        // console.log(res.data);
         setPosts(res.data);
     };
     //empty array tells the function to run it  one time at the beginning
