@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: client-blog-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client-blog
+  template:
+    metadata:
+      labels:
+        app: client-blog
+    spec:
+      containers: 
+        - name: client-blog
+          image: af912/client-blog:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-blog-srv
+spec:
+  selector:
+    app: client-blog
+  ports: 
+    - name: client-blog
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+    
